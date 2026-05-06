@@ -1,35 +1,35 @@
-const ws = require('ws');
+require('dotenv').config()
 
-let server = new ws.Server({ port: 3001 });
+const database = require('./src/config/database')
 
-let users = {}
+database.authenticate();
 
-server.on("connection", (client) => {
-    client.on("close", () => { });
-    client.on("message", (message) => {
-        console.log (message.toString())
-        let msgObject = JSON.parse(message.toString())
+const ws = require('ws')
+
+let server = new ws.Server({ port: 3001 })
+
+const User = require('./src/models.user')
+
+server.on('connection', (client) => {
+    
+    client.on('message', (msg) => {
+        let data = JSON.parse(msg)
         
-        if(msgObject.action == 'confirm_connection') {
-            users[msgObject.user] = client
+        if (data.action == 'register') {
+            let user = await User.create({ login: data.login })
+            await user.save()
             
-        } else if(msgObject.action == 'disconnet') {
-            delete users[msgObject.user];
+            client.send(JSON.stringify({ sucess: true, msg: 'User registred!'}));
+        } else if (data.action == 'message_to') {
             
-        } else if (msgObject.action == 'message') {
-            const { sender, receiver, message } =msgObject;
-            
-            if(users[receiver] !== undefined){
-                users[receiver].send(JSON.stringify({
-                    
-                    action: "message",
-                    sender: sender,
-                    message: message,
-                }))
+        } else if (data.action == 'login') {
+            let user = await User.findOne({ Login})
+            if (user == null) {
+                client.send(JSON.stringify({sucess: false, msg: 'User not found'}))
+            } else {
+                logedUsers[user.login] = client;
+                client['logRef'] = user.login;
             }
         }
-    });
-    
-    client.send(JSON.stringify({ connection: true, action: 'who_is'}))
-    console.log("connectado!");
-});
+    })
+})
