@@ -1,7 +1,7 @@
 let server = null
 
 
-function serverConnect() {
+function register() {
     server = new WebSocket('ws://127.0.0.1:3001');
     
     server.onopen = (evt) => {

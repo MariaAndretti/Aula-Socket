@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Socket</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div id="telaLogin" class="card">
+        <h2>Entrar no Chat</h2>
+        <input type="text" id="user" placeholder="Seu ID">
+        <button onclick="login()">Entrar</button>
+    </div>
+    
+    <div id="telaChat" class="card" style="display: none;">
+        <div id="chat">
+            <h3 id="salaChat">Sala: Geral</h3>
+            <button onclick="logout()">Sair</button>
+        </div>
+        <div id="caixaChat"></div>
+        <div class="controls">
+            <input type="text" id="message" placeholder="Digite algo...">
+            <button onclick="sendMessage()">Enviar</button>
+        </div>
+    </div>
+    
+    <script src="index.js"></script>
+</body>
+</html>
